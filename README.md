@@ -8,6 +8,7 @@ This is the official repository of the paper:
 
 > **Detecting Relevance during Decision-Making from Eye Movements for UI Adaptation**<br>
 > Anna Maria Feit\*, Lukas Vordemann\*, Seonwook Park, Caterina Bérubé, Otmar Hilliges <br>
+
 \* These two authors contributed equally to this work. <br>
 
 
