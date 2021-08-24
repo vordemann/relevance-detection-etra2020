@@ -1,0 +1,95 @@
+.infoTile.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: left;
+    width: 69%;
+    height: 7%;
+    text-align: center;
+    font-size: 25px;
+    pointer-events: none;
+}
+.infoTile.title > div {
+    height: auto;
+    width: auto;
+    padding: 10px;
+    margin: 0;
+}
+
+:root {
+    --aoi-padding: 30px;
+    --outline-width: 8px;
+}
+
+.infoTile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.infoTile > div {
+    overflow: hidden;
+    padding: 0;
+    pointer-events: none;
+    width: calc(100% - 2*var(--aoi-padding));
+    height: calc(100% - 2*var(--aoi-padding));
+}
+
+.infoTile.text {
+    float: left;
+    width: 23%;
+    height: 31%;
+    text-align: left;
+    color: #020202;
+}
+
+.infoTile.text > div {
+    padding: 10px;
+}
+
+.infoTile.text div.title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.infoTile.picture {
+    float: right;
+    width: 31%;
+    height: 34%;
+    text-align: center;
+}
+
+.infoTile.picture > div > img {
+    display: inline-block;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.infoTile.map {
+    float: right;
+    width: 31%;
+    height: 33%;
+}
+
+.infoTile.picture > div ,
+.infoTile.map > div {
+    height: calc(100% - 1.5*var(--aoi-padding));
+    width: calc(100% - 1.5*var(--aoi-padding));
+}
+
+.infoTile.coloured > div {
+    border-radius: 15px;
+    border: var(--outline-width) solid #F15A24;
+}
+
+.infoTile.faded {
+    filter: grayscale(100%);
+    color: #555;
+    opacity: 0.5;
+}
+
+.infoTile.map.faded {
+    opacity: 0.8;
+}

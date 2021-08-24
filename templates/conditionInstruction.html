@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/style.css">
+    <title>AttentionUI Prototype 0.1</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace);
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('Instruction page is connected!');
+            });
+            socket.on('startpoint', function () {
+                window.location.href = "/startpoint";
+                return false;
+            });
+
+            document.body.style.cursor = 'none';
+
+            // Handler for double space bar tap
+            var lasKeyPress = 0;
+            var delta = 400;
+            function key_press() {
+                var thisKeyPress = new Date();
+                if (thisKeyPress-lasKeyPress <= delta) {
+                    socket.emit('startpoint');
+                    thisKeyPress = 0;
+                }
+                lasKeyPress = thisKeyPress;
+            }
+
+            document.body.onkeypress = function (e) {
+
+                if (e.keyCode == 32) {
+                    key_press();
+                }
+            };
+
+        });
+    </script>
+</head>
+<body>
+<div class="centerContent">
+<div>
+    <h1>Instruktionen</h1>
+    <p>In der Studie werden Ihnen eine Reihe von Zimmeranzeigen gezeigt und Sie sollten sich entscheiden, ob Sie sich auf dieses Zimmer bewerben würden oder nicht.
+    Es handelt sich hierbei immer um Einzelentscheidungen und es besteht kein Zusammenhang zwischen den verschiedenen Anzeigen.
+        Sobald Sie eine Entscheidung getroffen haben drücken Sie bitte die Leertaste zweimal schnell hintereinander. Anschliessend verschwindet die Anzeige und Sie werden gebeten das Ergebnis Ihrer Entscheidung zu dokumentieren.
+    </p>
+    <p>Bevor die Zimmernazeige erscheint, werden Sie zuerst einen grauen Punkt in der Mitte des Bildschirmes sehen. Bitte schauen Sie solange auf den Punkt bis er nach 3 Sekunden von alleine verschwindet. Dies ist der Ausgangspunkt für die Messungen.
+        Während Sie die Anzeige begutachten nimmt der Eye Tracker Ihre Augenbewegungen auf. Bitte lassen Sie sich davon nciht stören. Verwenden Sie bitte Immer die Kinnstütze und halten Ihren Kopf in einer ruhige Position.
+    </p>
+    <p>Zum Fortfahren die Leertaste doppelt drücken</p>
+</div></div>
+</body>
+</html>

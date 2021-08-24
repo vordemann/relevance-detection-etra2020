@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/styleQuestionnaire.css">
+    <title>AttentionUI Prototype 0.1</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace)
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('Confidence connected!');
+            });
+            socket.on('calibration', function () {
+                window.location.href = "/calibration";
+                return false;
+            });
+            socket.on('startpoint', function () {
+                window.location.href = "/startpoint";
+                return false;
+            });
+            socket.on('evaluation', function () {
+                window.location.href = "/evaluation";
+                return false;
+            });
+
+
+            // Handler for button
+            $('button#next').click(function (event) {
+                if ($("input[name='apply']:checked").size() > 0) {
+                    if ($("input[name='confidence']:checked").size() > 0){
+                        var apply = $("input[name='apply']:checked").val();
+                        var confidence = $("input[name='confidence']:checked").val();
+                        socket.emit('confidenceResponse',{decision:apply,confidence:confidence});
+                        return false;
+                    }
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div class="centerContent">
+<div>
+    <h1>Zimmeranzeige</h1>
+    <form>
+        <b>Wuerden Sie sich auf dieses Zimmer bewerben? </b> <br>
+	<div class="radioarray">
+		<input type="radio" name="apply" value="yes" id="apply-yes">
+		<label for="apply-yes">Ja</label>
+		<input type="radio" name="apply" value="no" id="apply-no">
+		<label for="apply-no">Nein</label>
+	</div>
+        <b>Wie sicher fuehlen Sie sich mit dieser Entscheidung? </b><br>
+	<div class="radiorow">
+		<label for="confidence-1" class="radiobegin">Sehr unsicher</label>
+		<div class="radiogroup"><input type="radio" id="confidence-1" name="confidence" value="1"><label for="confidence-1">1</label></div>
+		<div class="radiogroup"><input type="radio" id="confidence-2" name="confidence" value="2"><label for="confidence-2">2</label></div>
+		<div class="radiogroup"><input type="radio" id="confidence-3" name="confidence" value="3"><label for="confidence-3">3</label></div>
+		<div class="radiogroup"><input type="radio" id="confidence-4" name="confidence" value="4"><label for="confidence-4">4</label></div>
+		<div class="radiogroup"><input type="radio" id="confidence-5" name="confidence" value="5"><label for="confidence-5">5</label></div>
+		<div class="radiogroup"><input type="radio" id="confidence-6" name="confidence" value="6"><label for="confidence-6">6</label></div>
+		<div class="radiogroup"><input type="radio" id="confidence-7" name="confidence" value="7"><label for="confidence-7">7</label></div>
+		<label for="confidence-7" class="radioend">Sehr sicher</label>
+	</div>
+    </form> <br>
+    <button id="next" type="button" style="float: right;">Next</button> <br>
+</div></div>
+</body>
+</html>

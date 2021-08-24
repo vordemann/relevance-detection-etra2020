@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/styleQuestionnaire.css">
+    <link rel="stylesheet" href="../static/style.css">
+	<title>AttentionUI Prototype 0.1</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace)
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('I\'m connected!');
+            });
+            socket.on('interview', function () {
+                window.location.href = "/postInterview";
+                return false;
+            })
+
+
+            // Handler for starting the User Study
+            $('button#next').click(function (event) {
+				if($("input[name='horrible']:checked").size() > 0 &&
+						$("input[name='difficult']:checked").size() > 0 &&
+						$("input[name='frustrating']:checked").size() > 0 &&
+						$("input[name='reading']:checked").size() > 0 &&
+						$("input[name='coloring']:checked").size() > 0 &&
+						$("input[name='fading']:checked").size() > 0 &&
+						$("input[name='structure']:checked").size() > 0 &&
+						$("input[name='content']:checked").size() > 0 &&
+						$("input[name='terminology']:checked").size() > 0 &&
+						$("input[name='handling']:checked").size() > 0 &&
+						$("input[name='instruction']:checked").size() > 0 &&
+						$("input[name='defaultDensity']:checked").size() > 0 &&
+						$("input[name='coloringDensity']:checked").size() > 0 &&
+						$("input[name='fadingDensity']:checked").size() > 0 &&
+						$("input[name='understandable']:checked").size() > 0
+				){
+					var horrible = $("input[name='horrible']:checked").val();
+					var difficult = $("input[name='difficult']:checked").val();
+					var frustrating = $("input[name='frustrating']:checked").val();
+					var reading = $("input[name='reading']:checked").val();
+					var coloring = $("input[name='coloring']:checked").val();
+					var fading = $("input[name='fading']:checked").val();
+					var structure = $("input[name='structure']:checked").val();
+					var content = $("input[name='content']:checked").val();
+					var terminology = $("input[name='terminology']:checked").val();
+					var handling = $("input[name='handling']:checked").val();
+					var instruction = $("input[name='instruction']:checked").val();
+					var defaultDensity = $("input[name='defaultDensity']:checked").val();
+					var coloringDensity = $("input[name='coloringDensity']:checked").val();
+					var fadingDensity = $("input[name='fadingDensity']:checked").val();
+					var understandable = $("input[name='understandable']:checked").val();
+					var message = {
+						horrible:horrible,
+						difficult:difficult,
+						frustrating:frustrating,
+						reading:reading,
+						coloring:coloring,
+						fading:fading,
+						structure:structure,
+						content:content,
+						terminology:terminology,
+						handling:handling,
+						instruction:instruction,
+						defaultDensity:defaultDensity,
+						coloringDensity:coloringDensity,
+						fadingDensity:fadingDensity,
+						understandable:understandable
+					};
+					socket.emit('interview',message);
+					return false;
+				}
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div class="content">
+    <h1>Bewertungsbogen</h1>
+    <div class="leftcol">
+	    <h2>Allgemeine Bewertung zum Umgang mit der Applikation</h2>
+	    <form>
+		    <!-- Question 1 -->
+		    <div class="radiorow">
+			    <label for="horrible-1" class="radiobegin">Schrecklich</label>
+			    <div class="radiogroup"><input type="radio" id="horrible-1" name="horrible" value="1"><label for="horrible-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="horrible-2" name="horrible" value="2"><label for="horrible-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="horrible-3" name="horrible" value="3"><label for="horrible-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="horrible-4" name="horrible" value="4"><label for="horrible-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="horrible-5" name="horrible" value="5"><label for="horrible-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="horrible-6" name="horrible" value="6"><label for="horrible-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="horrible-7" name="horrible" value="7"><label for="horrible-7">7</label></div>
+			    <label for="horrible-7" class="radioend">Wunderbar</label>
+		    </div>
+		    <!-- Question 2 -->
+		    <div class="radiorow">
+			    <label for="difficult-1" class="radiobegin">Schwer</label>
+			    <div class="radiogroup"><input type="radio" id="difficult-1" name="difficult" value="1"><label for="difficult-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="difficult-2" name="difficult" value="2"><label for="difficult-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="difficult-3" name="difficult" value="3"><label for="difficult-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="difficult-4" name="difficult" value="4"><label for="difficult-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="difficult-5" name="difficult" value="5"><label for="difficult-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="difficult-6" name="difficult" value="6"><label for="difficult-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="difficult-7" name="difficult" value="7"><label for="difficult-7">7</label></div>
+			    <label for="difficult-7" class="radioend">Leicht</label>
+		    </div>
+		    <!-- Question 3 -->
+		    <div class="radiorow">
+			    <label for="frustrating-1" class="radiobegin">Frustrierend</label>
+			    <div class="radiogroup"><input type="radio" id="frustrating-1" name="frustrating" value="1"><label for="frustrating-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="frustrating-2" name="frustrating" value="2"><label for="frustrating-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="frustrating-3" name="frustrating" value="3"><label for="frustrating-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="frustrating-4" name="frustrating" value="4"><label for="frustrating-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="frustrating-5" name="frustrating" value="5"><label for="frustrating-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="frustrating-6" name="frustrating" value="6"><label for="frustrating-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="frustrating-7" name="frustrating" value="7"><label for="frustrating-7">7</label></div>
+			    <label for="frustrating-7" class="radioend">Befriedigend</label>
+		    </div>
+	    </form>
+	    <h2>Screen</h2>
+	    <form>
+		    <!-- Question 4-->
+		    <b>Die Lesbarkeit des Textes ist</b>
+		    <div class="radiorow">
+			    <label for="reading-1" class="radiobegin">Schlecht</label>
+			    <div class="radiogroup"><input type="radio" id="reading-1" name="reading" value="1"><label for="reading-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="reading-2" name="reading" value="2"><label for="reading-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="reading-3" name="reading" value="3"><label for="reading-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="reading-4" name="reading" value="4"><label for="reading-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="reading-5" name="reading" value="5"><label for="reading-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="reading-6" name="reading" value="6"><label for="reading-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="reading-7" name="reading" value="7"><label for="reading-7">7</label></div>
+			    <label for="reading-7" class="radioend">Gut</label>
+		    </div>
+		    <!-- Question 5-->
+		    <b>Farblich hervorgehobene Elemente erleichtern die Aufgabe</b>
+		    <div class="radiorow">
+			    <label for="coloring-1" class="radiobegin">Nie</label>
+			    <div class="radiogroup"><input type="radio" id="coloring-1" name="coloring" value="1"><label for="coloring-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloring-2" name="coloring" value="2"><label for="coloring-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloring-3" name="coloring" value="3"><label for="coloring-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloring-4" name="coloring" value="4"><label for="coloring-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloring-5" name="coloring" value="5"><label for="coloring-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloring-6" name="coloring" value="6"><label for="coloring-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloring-7" name="coloring" value="7"><label for="coloring-7">7</label></div>
+			    <label for="coloring-7" class="radioend">Immer</label>
+		    </div>
+		    <!-- Question 6-->
+		    <b>Das Verblassen von Element erleichter die Aufgabe</b>
+		    <div class="radiorow">
+			    <label for="fading-1" class="radiobegin">Nie</label>
+			    <div class="radiogroup"><input type="radio" id="fading-1" name="fading" value="1"><label for="fading-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="fading-2" name="fading" value="2"><label for="fading-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="fading-3" name="fading" value="3"><label for="fading-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="fading-4" name="fading" value="4"><label for="fading-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="fading-5" name="fading" value="5"><label for="fading-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="fading-6" name="fading" value="6"><label for="fading-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="fading-7" name="fading" value="7"><label for="fading-7">7</label></div>
+			    <label for="fading-7" class="radioend">Immer</label>
+		    </div>
+		    <!-- Question 7-->
+		    <b>Die Struktur und Aufbau der Anzeige ist</b>
+		    <div class="radiorow">
+			    <label for="structure-1" class="radiobegin">Verwirrend</label>
+			    <div class="radiogroup"><input type="radio" id="structure-1" name="structure" value="1"><label for="structure-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="structure-2" name="structure" value="2"><label for="structure-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="structure-3" name="structure" value="3"><label for="structure-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="structure-4" name="structure" value="4"><label for="structure-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="structure-5" name="structure" value="5"><label for="structure-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="structure-6" name="structure" value="6"><label for="structure-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="structure-7" name="structure" value="7"><label for="structure-7">7</label></div>
+			    <label for="structure-7" class="radioend">Sehr verständlich</label>
+		    </div>
+		    <!-- Question 8-->
+		    <b>Der Inhalt der Anzeige ist</b>
+		    <div class="radiorow">
+			    <label for="content-1" class="radiobegin">Verwirrend</label>
+			    <div class="radiogroup"><input type="radio" id="content-1" name="content" value="1"><label for="content-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="content-2" name="content" value="2"><label for="content-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="content-3" name="content" value="3"><label for="content-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="content-4" name="content" value="4"><label for="content-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="content-5" name="content" value="5"><label for="content-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="content-6" name="content" value="6"><label for="content-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="content-7" name="content" value="7"><label for="content-7">7</label></div>
+			    <label for="content-7" class="radioend">Sehr verständlich</label>
+		    </div>
+	    </form>
+    </div>
+    <div class="rightcol">
+	    <h2>Ausdrucksweise</h2>
+	    <!-- Question 9-->
+	    <form>
+		    <b>Die Verwendung von Begriffen ist durchgehend</b>
+		    <div class="radiorow">
+			    <label for="terminology-1" class="radiobegin">Inkonsistent</label>
+			    <div class="radiogroup"><input type="radio" id="terminology-1" name="terminology" value="1"><label for="terminology-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="terminology-2" name="terminology" value="2"><label for="terminology-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="terminology-3" name="terminology" value="3"><label for="terminology-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="terminology-4" name="terminology" value="4"><label for="terminology-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="terminology-5" name="terminology" value="5"><label for="terminology-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="terminology-6" name="terminology" value="6"><label for="terminology-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="terminology-7" name="terminology" value="7"><label for="terminology-7">7</label></div>
+			    <label for="terminology-7" class="radioend">Konsistent</label>
+		    </div>
+	    </form>
+	    <h2>Lerneffekt</h2>
+	    <form>
+		    <!-- Question 10-->
+		    <b>Die Handhabung (ablesen von Informationen) ist</b>
+		    <div class="radiorow">
+			    <label for="handling-1" class="radiobegin">Schwer</label>
+			    <div class="radiogroup"><input type="radio" id="handling-1" name="handling" value="1"><label for="handling-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="handling-2" name="handling" value="2"><label for="handling-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="handling-3" name="handling" value="3"><label for="handling-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="handling-4" name="handling" value="4"><label for="handling-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="handling-5" name="handling" value="5"><label for="handling-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="handling-6" name="handling" value="6"><label for="handling-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="handling-7" name="handling" value="7"><label for="handling-7">7</label></div>
+			    <label for="handling-7" class="radioend">Leicht</label>
+		    </div>
+		    <!-- Question 11-->
+		    <b>Die Aufgabenstellung ist verstaendlich</b>
+		    <div class="radiorow">
+			    <label for="instruction-1" class="radiobegin">Trifft nie zu</label>
+			    <div class="radiogroup"><input type="radio" id="instruction-1" name="instruction" value="1"><label for="instruction-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="instruction-2" name="instruction" value="2"><label for="instruction-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="instruction-3" name="instruction" value="3"><label for="instruction-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="instruction-4" name="instruction" value="4"><label for="instruction-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="instruction-5" name="instruction" value="5"><label for="instruction-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="instruction-6" name="instruction" value="6"><label for="instruction-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="instruction-7" name="instruction" value="7"><label for="instruction-7">7</label></div>
+			    <label for="instruction-7" class="radioend">Trifft immer zu</label>
+		    </div>
+		    <!-- Question 12-->
+		    <b>Die Informationsdichte ohne farbliche Hervorhebung und ohne verblasste Elemente ist</b>
+		    <div class="radiorow">
+			    <label for="defaultDensity-1" class="radiobegin">Überwältigend</label>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-1" name="defaultDensity" value="1"><label for="defaultDensity-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-2" name="defaultDensity" value="2"><label for="defaultDensity-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-3" name="defaultDensity" value="3"><label for="defaultDensity-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-4" name="defaultDensity" value="4"><label for="defaultDensity-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-5" name="defaultDensity" value="5"><label for="defaultDensity-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-6" name="defaultDensity" value="6"><label for="defaultDensity-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="defaultDensity-7" name="defaultDensity" value="7"><label for="defaultDensity-7">7</label></div>
+			    <label for="defaultDensity-7" class="radioend">Ausgeglichen</label>
+		    </div>
+		    <!-- Question 13-->
+		    <b>Die Informationsdichte mit farblichen Hervorhebungen ist</b>
+		    <div class="radiorow">
+			    <label for="coloringDensity-1" class="radiobegin">Überwältigend</label>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-1" name="coloringDensity" value="1"><label for="coloringDensity-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-2" name="coloringDensity" value="2"><label for="coloringDensity-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-3" name="coloringDensity" value="3"><label for="coloringDensity-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-4" name="coloringDensity" value="4"><label for="coloringDensity-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-5" name="coloringDensity" value="5"><label for="coloringDensity-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-6" name="coloringDensity" value="6"><label for="coloringDensity-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="coloringDensity-7" name="coloringDensity" value="7"><label for="coloringDensity-7">7</label></div>
+			    <label for="coloringDensity-7" class="radioend">Ausgeglichen</label>
+		    </div>
+		    <!-- Question 14-->
+		    <b>Die Informationsdichte mit verblassten Elementen ist</b>
+		    <div class="radiorow">
+			    <label for="fadingDensity-1" class="radiobegin">Überwältigend</label>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-1" name="fadingDensity" value="1"><label for="fadingDensity-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-2" name="fadingDensity" value="2"><label for="fadingDensity-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-3" name="fadingDensity" value="3"><label for="fadingDensity-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-4" name="fadingDensity" value="4"><label for="fadingDensity-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-5" name="fadingDensity" value="5"><label for="fadingDensity-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-6" name="fadingDensity" value="6"><label for="fadingDensity-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="fadingDensity-7" name="fadingDensity" value="7"><label for="fadingDensity-7">7</label></div>
+			    <label for="fadingDensity-7" class="radioend">Ausgeglichen</label>
+		    </div>
+		    <!-- Question 11-->
+		    <b>Das System ist fuer alle Arten von Nutzern verstaendlich</b>
+		    <div class="radiorow">
+			    <label for="understandable-1" class="radiobegin">Trifft nie zu</label>
+			    <div class="radiogroup"><input type="radio" id="understandable-1" name="understandable" value="1"><label for="understandable-1">1</label></div>
+			    <div class="radiogroup"><input type="radio" id="understandable-2" name="understandable" value="2"><label for="understandable-2">2</label></div>
+			    <div class="radiogroup"><input type="radio" id="understandable-3" name="understandable" value="3"><label for="understandable-3">3</label></div>
+			    <div class="radiogroup"><input type="radio" id="understandable-4" name="understandable" value="4"><label for="understandable-4">4</label></div>
+			    <div class="radiogroup"><input type="radio" id="understandable-5" name="understandable" value="5"><label for="understandable-5">5</label></div>
+			    <div class="radiogroup"><input type="radio" id="understandable-6" name="understandable" value="6"><label for="understandable-6">6</label></div>
+			    <div class="radiogroup"><input type="radio" id="understandable-7" name="understandable" value="7"><label for="understandable-7">7</label></div>
+			    <label for="understandable-7" class="radioend">Trifft immer zu</label>
+		    </div>
+	    </form>
+	    <button id="next" type="button" style="float: right;">Next</button>
+    </div>
+</div>
+</body>
+</html>

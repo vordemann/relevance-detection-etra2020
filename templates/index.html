@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/style.css">
+    <title>AttentionUI Prototype 0.1</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace)
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('Index page connected!');
+            });
+            socket.on('start', function () {
+                window.location.href = "/info";
+                return false;
+            })
+
+
+            // Handler for starting the User Study
+            $('button#start').click(function (event) {
+                if($('#participantID').val().length != 0){
+                    if (parseInt($('#budget').val()) >= 600){
+                        socket.emit('start',{participantID : $('#participantID').val(), budget : $('#budget').val()});
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="centerContent">
+    <div>
+<h1>Attention-based User Interfaces</h1>
+<form id="login">
+    Participant ID: &nbsp;
+    <input type="number" min="0" name="participantID" id="participantID"> &nbsp;&nbsp;&nbsp;
+    Budget: &nbsp;
+    <input type="number" min="600" name="budget" id="budget"> <br>
+</form> <br>
+<button id="start" type="button" style="float: right;">Start</button> <br>
+
+</div></div>
+</body>
+</html>

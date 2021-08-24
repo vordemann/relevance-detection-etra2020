@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/styleQuestionnaire.css">
+    <title>AttentionUI Prototype 0.1</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace)
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('Demographics page connected!');
+            });
+            socket.on('preInterview', function () {
+                window.location.href = "/preInterview";
+                return false;
+            });
+
+
+            // Handler for button
+            $('button#next').click(function (event) {
+                if ($("input[name='gender']:checked").size() > 0){
+                    if ($('#age').val().length != 0) {
+                        if ($("input[name='visionCorrection']:checked").size() > 0){
+                            if ($('#subject').val().length != 0){
+                                if ($("input[name='lastSearch']:checked").size() > 0 && $("input[name='futureSearch']:checked").size() > 0) {
+                                    if ($("input[name='lastSearch']:checked").val() == 'never') {
+                                        var last = 'never';
+                                    }
+                                    else {
+                                        var last = $('#months').val();
+                                    }
+                                    if ($("input[name='futureSearch']:checked").val() == 'no') {
+                                        var future = 'no';
+                                    }
+                                    else {
+                                        var future = $('#monthsFuture').val();
+                                    }
+
+                                    var message = {
+                                        gender : $("input[name='gender']:checked").val(),
+                                        age : $('#age').val(),
+                                        visionCorrection : $("input[name='visionCorrection']:checked").val(),
+                                        subject : $('#subject').val(),
+                                        lastSearch : last,
+                                        futureSearch : future
+                                    };
+                                    socket.emit('preInterview',message);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+<div class="centerContent">
+    <div>
+    <h1>Demographischer Fragebogen</h1>
+    <form id="demographics">
+	<div class="radioarray">
+		<b>Geschlecht:</b>
+		<input type="radio" name="gender" id="male" value="male">
+		<label for="male">Maennlich</label>
+		<input type="radio" name="gender" id="female" value="female">
+		<label for="female">Weiblich</label>
+		<input type="radio" name="gender" id="other" value="other">
+		<label for="other">Sonstiges</label>
+	</div>
+	<div class="radioarray">
+		<b>Alter:</b>
+		<input type="number" id="age" name="age" min="18" style="width: 40px" size="2">
+	</div>
+	<div class="radioarray">
+		<b>Sehhilfe:</b>
+		<input type="radio" id="glasses" name="visionCorrection" value="glasses">
+		<label for="glasses">Brille</label>
+		<input type="radio" id="contacts" name="visionCorrection" value="contacts">
+		<label for="contacts">Kontaktlinsen</label>
+		<input type="radio" id="noCorrection" name="visionCorrection" value="none">
+		<label for="noCorrection">Keine</label>
+	</div>
+	<div class="radioarray">
+		<b>Studienfach:</b>
+		<input type="text" id="subject" name="subject" >
+	</div>
+	<div class="radioarray">
+		<b>Wann haben Sie das letzte mal nach einem Zimmer gesucht?</b><br>
+		<input type="radio" id="lastSearch" name="lastSearch" value="never">
+		<label for="lastSearch">Nie</label>
+		<input type="radio" id="lastSearchhMonths" name="lastSearch" value="months">
+		<label for="lastSearchhMonths">
+			Vor
+			<input id="months" type="number" name="lastSearchTime" min="0" style="width: 40px" size="2" maxlength="2" value="monthsAmount">
+			Monaten
+		</label>
+	</div>
+	<div class="radioarray">
+		<b>Haben Sie vor in den kommenden Monaten nach einem Zimmer zu suchen?</b><br>
+		<input type="radio" id="futureSearch" name="futureSearch" value="no" >
+		<label for="futureSearch">Nein</label>
+		<input type="radio" id="futureSearchMonths" name="futureSearch" value="months">
+		<label for="futureSearchMonths">
+			In
+			<input id="monthsFuture" type="number" name="futureSearchTime" min="0" style="width: 40px" size="2" maxlength="2" value="monthsAmount">
+			Monaten
+		</label>
+	</div>
+    </form>
+    <button id="next" type="button" style="float: right;">Next</button> <br>
+</div></div>
+</body>
+</html>

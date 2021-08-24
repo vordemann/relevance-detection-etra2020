@@ -1,0 +1,49 @@
+html, body, .container
+{
+    overflow: hidden;
+    background-color: #f2efe6;
+    font-family: Helvetica;
+    font-size: 18px;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+:root {
+    --whole-ui-padding: 60px;
+}
+
+html > body {
+    position: absolute;
+    height: 100% !important;
+    width: 100% !important;
+}
+
+body > .container {
+    margin: var(--whole-ui-padding) !important;
+    min-height: calc(100% - 2*var(--whole-ui-padding));
+    height: calc(100% - 2*var(--whole-ui-padding));
+}
+
+.centerContent
+{
+    display: flex ;
+    align-items: center ;
+    justify-content: center ;
+    position: fixed ;
+    top: 10% ;
+    bottom: 10% ;
+    left: 10% ;
+    right: 10% ;
+}
+
+.dot{
+    display: flex ;
+    align-items: center ;
+    justify-content: center ;
+    height: 50px;
+    width: 50px;
+    background-color: #020202;
+    opacity: 0.4;
+    border-radius: 50%;
+    position: fixed;
+}

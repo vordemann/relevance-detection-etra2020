@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/style.css">
+    <title>AttentionUI Prototype 0.1</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace)
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('Info page connected!');
+            });
+            socket.on('demographics', function () {
+                window.location.href = "/demographics";
+                return false;
+            });
+
+            // Handler for button
+            $('button#next').click(function (event) {
+                if (document.getElementById('checkbox').checked) {
+                    socket.emit('demographics');
+                    return false;
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div class="centerContent">
+<div>
+    <h1>Allgemeine Informationen</h1>
+    <p>
+        Wir bedanken uns herzlich für Ihre Teilnahme an dieser Nutzerstudie.
+    </p>
+    <p>
+        Mit diesem Experiment untersuchen wir verschiedene Eye-Tracking Metriken, um Aufmerksamkeit und Relevanz in der Informationsbeschaffung und Entscheidungsfindung zu beobachten. <br>Wir messen Ihre Augenbewegungen, während Sie sich verschiedene Zimmeranzeigen anschauen.
+    </p>
+    <p>
+    Die Nutzerstudie ist in vier Teile gegliedert:
+        <ol>
+    <li>    Zu Beginn müssen Sie die Einwilligungserklärung unterschreiben und ein paar allgemeine Fragen zu Ihrer Person beantworten.
+</li>
+    <li>    Anschließend kalibrieren wir den Eye-Tracker. Dieser Schritt wird im Laufe des Experiments mehrmals wiederholt und ist die Voraussetzung für genaue Messungen.
+</li>
+    <li>    Im Hauptteil der Studie zeigen wir Ihnen insgesamt 35 Zimmeranzeigen für die Sie jeweils entscheiden müssen ob Sie sich auf dieses Zimmer bewerben würden oder nicht. Das ganze ist in fünf Durchgänge (1x4, 1x10 und 3x7 Anzeigen) gegliedert. Der erste Durchgang besteht aus vier Anzeigen und soll Ihnen die Möglichkeit geben sich an das System und den Eye-Tracker zu gewöhnen. Jeder Durchgang beginnt mit einer Kalibrierung (siehe 2.). Danach bitten wir Sie den Anweisung auf dem Bildschirm zu folgen.
+</li>
+    <li>    Zum Schluss folgt ein Bewertungsbogen und wir fragen nach Ihrem wertvollem Feedback, bevor Sie Ihre Entlohnung erhalten.
+</li>
+    </ol>
+    </p>
+    <p>
+    Vor jedem Schritt erhalten Sie noch genauere Anweisungen auf dem Bildschirm. Bei Unklarheiten können Sie sich gerne an die Aufsichtsperson wenden. <br>Die ganze Nutzerstudie dauert ca. eine Stunde.
+    </p>
+    <p>
+        <b>Extra Informationen:</b><br>
+        <ul>
+            <li>    Während der gesamten Nutzerstudie sind Sie keinerlei Risiken ausgesetzt
+</li>
+            <li>    Die Teilnahme an dieser Nutzerstudie ist freiwillig und das Experiment kann zu jedem Zeitpunkt abgebrochen werden.
+</li>
+            <li>    Alle Daten werden vertraulich behandelt und anonymisiert gespeichert.
+</li>
+    <li>    Es ist nicht möglich anhand der gespeicherten Daten eine Person zu identifizieren.
+</li>
+    <li>
+        Das Feedback am Ende der Nutzerstudie erfolgt in mündlicher Form und wird mit einem Audiorecorder aufgezeichnet. <br>Alle Aufzeichnungen werden ausschließlich für die Transkription des Gesprochenen verwendet und mit Abschluss der Nutzerstudie gelöscht.
+    </li>
+    <li>    Die Ergebnisse dieser Nutzerstudie werden veröffentlicht.
+</li>
+    <li>    Für die Teilnahme erhalten Sie eine Entlohnung von 25 CHF
+</li>
+    <li>    Ihre Entlohnung wird am Ende des Experiments ausgezahlt
+</li>
+        </ul>
+    </p>
+    <p>
+    Bei Fragen und Unklarheiten wenden Sie sich bitte an die Aufsichtsperson. Sollten Fragen erst im Nachhinein aufkommen, schreiben Sie uns bitte eine E-Mail.
+    </p>
+    <p>
+    Lukas Vordemann <br>
+        <b>lukasvo@ethz.ch</b>
+    </p>
+    <p>
+    Nochmals vielen Dank für Ihre Teilnahme und viel Spass bei der Nutzerstudie.
+    </p>
+
+
+    <input id="checkbox" type="checkbox">Ich habe die Einwilligungserklaerung unterschrieben
+    <button id="next" type="button" style="float: right;">Next</button> <br>
+</div></div>
+</body>
+</html>

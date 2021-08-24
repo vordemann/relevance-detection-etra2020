@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/styleAdvertisement.css">
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <title>AttentionUI Prototype 0.1</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+
+
+        $(window).on('load', function() {
+           //Empty namespace because we use single channel
+            namespace = '';
+
+            //Connect to Socket.IO server
+            var socket = io(namespace)
+            var adID;
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            socket.on('connect', function() {
+                socket.send('Advertisement loaded!');
+            });
+            socket.on('confidence', function() {
+                window.location.href = "/confidence";
+                return false;
+            });
+            socket.on('adRequest', function (data) {
+                loadContent(data);
+            });
+
+
+            // Handler for double space bar tap
+            var lasKeyPress = 0;
+            var delta = 400;
+            function key_press() {
+                var thisKeyPress = new Date();
+                if (thisKeyPress-lasKeyPress <= delta) {
+                    socket.emit('confidence');
+                    thisKeyPress = 0;
+                }
+                lasKeyPress = thisKeyPress;
+            }
+
+            document.body.onkeypress = function (e) {
+
+                if (e.keyCode == 32) {
+                    key_press();
+                }
+            };
+
+
+            // once ad is received fill page with content
+            function loadContent(message){
+                adID = message['id'];
+                var state = message['state'];
+                var adaptation = message['adaptation']
+
+                var data = message['data'];
+
+                //Title
+                var title = "<strong>"+data['title']+"</strong>";
+                $('#title').html(title);
+                //Picture
+                $('<img/>').attr({'src':'../static/pics/' + adID + '.jpg','style':"max-width: 100%","alt":"" }).appendTo('#picture');
+                //Maps
+                var long = parseFloat(data['location']['longitude']);
+                var lat = parseFloat(data['location']['latitude']);
+                var loc = {lat: lat, lng: long};
+                var mapClose = new google.maps.Map(document.getElementById('mapClose'), {
+                    center: loc,
+                    zoom : 16,
+                    zoomControl: false,
+                    mapTypeControl: false,
+                    scaleControl: false,
+                    streetViewControl: false,
+                    rotateControl: false,
+                    fullscreenControl: false
+                });
+                var mapOverview = new google.maps.Map(document.getElementById('mapOverview'), {
+                    center: {lat:47.3869, lng: 8.5417},
+                    zoom : 11,
+                    zoomControl: false,
+                    mapTypeControl: false,
+                    scaleControl: false,
+                    streetViewControl: false,
+                    rotateControl: false,
+                    fullscreenControl: false
+                });
+                var markerClose = new google.maps.Marker({position: loc, map:mapClose});
+                var markerOverview = new google.maps.Marker({position: loc, map:mapOverview});
+                //Facts
+                var overall_price = "<b>Preis</b>: "+data['cost']['overall_cost']+" CHF";
+                $('#overallCosts').html(overall_price);
+                var room_dimension = "<b>Zimmergroesse:</b> "+data['object']['room_dimension']+"m<sup>2</sup>";
+                $('#roomDimension').html(room_dimension);
+                var start_date = "<b>Einzugsdatum:</b> "+data['contract']['start'];
+                $('#startingTime').html(start_date);
+                var duration = "<b>Laufzeit:</b> "+data['contract']['duration'];
+                $('#contractDuration').html(duration);
+                //Costs
+                var rent = "<b>Miete:</b> "+data['cost']['rent']+" CHF";
+                $('#rent').html(rent);
+                var additional_costs = "<b>Nebenkosten:</b> "+data['cost']['additional']+" CHF";
+                $('#additional').html(additional_costs);
+                var compensation ="<b>Abschlagszahlung:</b> "+data['cost']['compensation']+" CHR";
+                $('#compensation').html(compensation);
+                var deposit = "<b>Kaution:</b> "+data['cost']['deposit']+" CHF";
+                $('#deposit').html(deposit);
+                //Location
+                var address = "<b>Adresse:</b> "+data['location']['address'];
+                $('#address').html(address);
+                var longitute = "<b>Laengengrad:</b> "+data['location']['longitude']+"° E";
+                $('#longitude').html(longitute);
+                var latitude = "<b>Breitengrad:</b> "+data['location']['latitude']+"° N";
+                $('#latitude').html(latitude);
+                var altitude = "<b>Hoehenlage:</b> "+data['location']['altitude']+"m";
+                $('#altitude').html(altitude);
+                //Object
+                var apartment_dimension = "<b>Wohnungsgroesse:</b> "+data['object']['overall_dimension']+" m<sup>2</sup>";
+                $('#overallDimension').html(apartment_dimension);
+                var floor = "<b>Stockwerk:</b> "+data['object']['floor'];
+                $('#floor').html(floor);
+                var number_rooms = "<b>Zimmeranzahl:</b> "+data['object']['number_rooms'];
+                $('#rooms').html(number_rooms);
+                var number_baths = "<b>Baeder:</b> "+data['object']['number_baths'];
+                $('#baths').html(number_baths);
+                var house_type = "<b>Haustyp:</b> "+data['object']['type'];
+                $('#type').html(house_type);
+                //Roomates
+                var number_roommates = "<b>Anzahl Mitbewohner:</b> "+data['roommates']['amount'];
+                $('#amount').html(number_roommates);
+                var age = "<b>Alter:</b> "+data['roommates']['age'];
+                $('#age').html(age);
+                var gender = "<b>Geschlecht:</b> "+data['roommates']['gender'];
+                $('#gender').html(gender);
+                var subjects = "<b>Fachrichtungen:</b> "+data['roommates']['profession'];
+                $('#profession').html(subjects);
+                //Surrounding
+                var public_transport = "<b>OEV Haltestelle:</b> "+data['surrounding']['public_transport']+"min zu Fuss";
+                $('#publicTransport').html(public_transport);
+                var supermarket = "<b>Supermarkt:</b> "+data['surrounding']['supermarket']+"min zu Fuss";
+                $('#supermarket').html(supermarket);
+                var bank = "<b>Bank:</b> "+data['surrounding']['bank']+"min zu Fuss";
+                $('#bank').html(bank);
+                var gym = "<b>Fitnessstudio:</b> "+data['surrounding']['gym']+"min zu Fuss";
+                $('#gym').html(gym);
+                //Ausstattung
+                var facilities = data['object']['facilities'];
+                $('#facilitiesDetail').html(facilities);
+                //Zusammenleben
+                var languages = "<b>Sprachen:</b> "+data['roommates']['language'];
+                $('#languages').html(languages);
+                var smoking = "<b>Rauchen:</b> "+data['roommates']['smoking'];
+                $('#smoking').html(smoking);
+                var wg_type = "<b>WG-Typ:</b> "+data['roommates']['type'];
+                $('#wg_type').html(wg_type);
+                var hobbies = "<b>Hobbies:</b> "+data['roommates']['hobbies'];
+                $('#hobbies').html(hobbies);
+                //Commute
+                var eth_center_transit = data['surrounding']['ETH_center_transit'];
+                var eth_center_bike = data['surrounding']['ETH_center_bike'];
+                var eth_center = "<b>ETH Zentrum:</b><br> "+eth_center_bike+"min <i class=\"fas fa-bicycle\"></i> / "+eth_center_transit+"min <i class=\"fas fa-bus\"></i>"
+                $('#ethCenter').html(eth_center);
+                var eth_hoengg_transit = data['surrounding']['ETH_hoengg_transit'];
+                var eth_hoengg_bike = data['surrounding']['ETH_hoengg_bike'];
+                var eth_hoengg = "<b>ETH Hoenggerberg:</b><br> "+eth_hoengg_bike+"min <i class=\"fas fa-bicycle\"></i> / "+eth_hoengg_transit+"min <i class=\"fas fa-bus\"></i>"
+                $('#ethHoengg').html(eth_hoengg);
+                var main_station_transit = data['surrounding']['HB_transit'];
+                var main_station_bike = data['surrounding']['HB_bike'];
+                var main_station = "<b>Hauptbahnhof:</b><br> "+main_station_bike+"min <i class=\"fas fa-bicycle\"></i> / "+main_station_transit+"min <i class=\"fas fa-bus\"></i>"
+                $('#station').html(main_station);
+
+
+
+                if (state == 'COLORING') {
+                    if (adaptation['TIT'] == '1'){
+                        $('#titleContainer').addClass('infoTile title coloured');
+                    }
+                    if (adaptation['PIC'] == '1'){
+                        $('#pictureContainer').addClass('infoTile picture coloured');
+                    }
+                    if (adaptation['MPC'] == '1'){
+                        $('#mapCloseContainer').addClass('infoTile map coloured');
+                    }
+                    if (adaptation['MPO'] == '1'){
+                        $('#mapOverviewContainer').addClass('infoTile map coloured');
+                    }
+                    if (adaptation['FAC'] == '1'){
+                        $('#factsContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['COS'] == '1'){
+                        $('#costsContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['LOC'] == '1'){
+                        $('#locationContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['OBJ'] == '1'){
+                        $('#objectContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['ROM'] == '1'){
+                        $('#roommatesContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['SUR'] == '1'){
+                        $('#surroundingContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['FCT'] == '1'){
+                        $('#facilitiesContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['FSD'] == '1'){
+                        $('#flatshareContainer').addClass('infoTile text coloured');
+                    }
+                    if (adaptation['COM'] == '1'){
+                        $('#commuteContainer').addClass('infoTile text coloured');
+                    }
+                }
+                else if (state == 'FADING'){
+                    if (adaptation['TIT'] != '1'){
+                        $('#titleContainer').addClass('infoTile title faded');
+                    }
+                    if (adaptation['PIC'] != '1'){
+                        $('#pictureContainer').addClass('infoTile picture faded');
+                    }
+                    if (adaptation['MPC'] != '1'){
+                        $('#mapCloseContainer').addClass('infoTile map faded');
+                    }
+                    if (adaptation['MPO'] != '1'){
+                        $('#mapOverviewContainer').addClass('infoTile map faded');
+                    }
+                    if (adaptation['FAC'] != '1'){
+                        $('#factsContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['COS'] != '1'){
+                        $('#costsContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['LOC'] != '1'){
+                        $('#locationContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['OBJ'] != '1'){
+                        $('#objectContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['ROM'] != '1'){
+                        $('#roommatesContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['SUR'] != '1'){
+                        $('#surroundingContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['FCT'] != '1'){
+                        $('#facilitiesContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['FSD'] != '1'){
+                        $('#flatshareContainer').addClass('infoTile text faded');
+                    }
+                    if (adaptation['COM'] != '1'){
+                        $('#commuteContainer').addClass('infoTile text faded');
+                    }
+                }
+                else {
+
+                }
+
+                document.body.style.cursor = 'none';
+                document.body.style.display = 'inline';
+
+                setTimeout(function ()  {
+                socket.emit('screenshot',{adID:adID})
+                },1000);
+            }
+            // meanwhile server starts recording
+            // or server starts recording upon request of page
+            // request ad after page is loaded
+
+            socket.emit('adRequest');
+
+        });
+
+    </script>
+
+</head>
+<body style="display: inline">
+<div class="container">
+    <div id="titleContainer" class="infoTile title">
+        <div id="title"></div>
+    </div>
+    <div id="pictureContainer" class="infoTile picture">
+        <div id="picture"></div>
+    </div>
+    <div id="factsContainer" class="infoTile text">
+        <div id="facts">
+            <div class="title">Fakten</div>
+            <p id="overallCosts"></p>
+            <p id="roomDimension"></p>
+            <p id="startingTime"></p>
+            <p id="contractDuration"></p>
+        </div>
+    </div>
+    <div id="costsContainer" class="infoTile text">
+        <div id="costs">
+            <div class="title">Kosten</div>
+            <p id="rent"></p>
+            <p id="additional"></p>
+            <p id="compensation"></p>
+            <p id="deposit"></p>
+        </div>
+    </div>
+    <div id="locationContainer" class="infoTile text">
+        <div id="location">
+            <div class="title">Ort</div>
+            <p id="address"></p>
+            <p id="latitude"></p>
+            <p id="longitude"></p>
+            <p id="altitude"></p>
+        </div>
+    </div>
+    <div id="mapCloseContainer" class="infoTile map">
+        <div id="mapClose"></div>
+    </div>
+    <div id="objectContainer" class="infoTile text">
+        <div id="object">
+            <div class="title">Objekt</div>
+            <p id="overallDimension"></p>
+            <p id="floor"></p>
+            <p id="rooms"></p>
+            <p id="baths"></p>
+            <p id="type"></p>
+        </div>
+    </div>
+    <div id="roommatesContainer" class="infoTile text">
+        <div id="roommates">
+            <div class="title">Mittbewohner</div>
+            <p id="amount"></p>
+            <p id="age"></p>
+            <p id="gender"></p>
+            <p id="profession"></p>
+        </div>
+    </div>
+    <div id="surroundingContainer" class="infoTile text">
+        <div id="surrounding">
+            <div class="title">Umgebung</div>
+            <p id="publicTransport"></p>
+            <p id="supermarket"></p>
+            <p id="bank"></p>
+            <p id="gym"></p>
+        </div>
+    </div>
+    <div id="mapOverviewContainer" class="infoTile map">
+        <div id="mapOverview"></div>
+    </div>
+    <div id="facilitiesContainer" class="infoTile text">
+        <div id="facilities">
+            <div class="title">Ausstattung</div>
+            <p id="facilitiesDetail"></p>
+        </div>
+    </div>
+    <div id="flatshareContainer" class="infoTile text">
+        <div id="flatshare">
+            <div class="title">Zusammenleben</div>
+            <p id="languages"></p>
+            <p id="smoking"></p>
+            <p id="wg_type"></p>
+            <p id="hobbies"></p>
+        </div>
+    </div>
+    <div id="commuteContainer" class="infoTile text">
+        <div id="commute">
+            <div class="title">Fahrzeiten</div>
+            <p id="ethCenter"></p>
+            <p id="ethHoengg"></p>
+            <p id="station"></p>
+        </div>
+    </div>
+    <script>
+        function initMap() {
+            // Styles a map in night mode.\
+            var location = {lat: 47.3981242, lng: 8.4501096};
+            var mapClose = new google.maps.Map(document.getElementById('mapClose'), {
+                center: location,
+                zoom : 16,
+                zoomControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: false
+            });
+            var mapOverview = new google.maps.Map(document.getElementById('mapOverview'), {
+                center: {lat:47.3869, lng: 8.5417},
+                zoom : 11,
+                zoomControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: false
+            });
+            var markerClose = new google.maps.Marker({position: location, map:mapClose});
+            var markerOverview = new google.maps.Marker({position: location, map:mapOverview});
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmt4RHF1cyDNYTMcTDzzaNbS7-i7Sgpzw&callback=initMap" async defer></script>
+</body>
+</html>
