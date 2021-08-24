@@ -7,7 +7,10 @@
 This is the official repository of the paper:
 
 > **Detecting Relevance during Decision-Making from Eye Movements for UI Adaptation**<br>
-> Anna Maria Feit, Lukas Vordemann, Seonwook Park, Caterina Bérubé, Otmar Hilliges <br>
+> Anna Maria Feit[^1], Lukas Vordemann[^1], Seonwook Park, Caterina Bérubé, Otmar Hilliges <br>
+[^1]: These two authors contributed equally to this work. <br>
+
+
 > **Abstract:** *This paper proposes an approach to detect information relevance during decision-making from eye movements in order to enable user interface adaptation. This is a challenging task because gaze behavior varies greatly across individual users and tasks and ground-truth data is difficult to obtain Thus, prior work has mostly focused on simpler target-search tasks or on establishing general interest, where gaze behavior is less complex. From the literature, we identify six metrics that capture different aspects of the gaze behavior during decision-making and combine them in a voting scheme. We empirically show, that this accounts for the large variations in gaze behavior and out performs standalone metrics. Importantly, it offers an intuitive way to control the amount of detected information, which is crucial for different UI adaptation schemes to succeed. We show the applicability of our approach by developing a room-search application that changes the visual saliency of content detected as relevant. In an empirical study, we show that it detects up to 97\% of relevant elements with respect to user self-reporting, which allows us to meaningfully adapt the interface, as confirmed by participants Our approach is fast, does not need any explicit user input and can be applied independent of task and user.*
 
 ## Citation
